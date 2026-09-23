@@ -65,6 +65,10 @@ impl MarkerScanner {
     /// preciso um teto, o teto tem que preservar o prefixo acumulado, não
     /// descartá-lo.
     pub fn push(&mut self, chunk: &[u8]) -> Option<Vec<u8>> {
+        // Marcador vazio nunca casa; guarda contra o panic de `windows(0)`.
+        if self.marcador.is_empty() {
+            return None;
+        }
         self.buffer.extend_from_slice(chunk);
         if let Some(pos) = self
             .buffer
@@ -102,6 +106,24 @@ mod tests {
     fn sem_marcador_continua_none() {
         let mut s = MarkerScanner::new("###FIM###");
         assert_eq!(s.push(b"ainda saindo dado"), None);
+    }
+
+    #[test]
+    fn caminho_log_usa_sufixo_acoes_jsonl() {
+        // Trava o sufixo `_acoes.jsonl` — o coletor Python (diligencia) casa
+        // exatamente esse glob; se o nome mudar, a ingestão silenciosamente
+        // não acha nada.
+        let dir = Path::new(r"C:\gravacoes");
+        assert_eq!(
+            caminho_log(dir, "sessao_2026"),
+            dir.join("sessao_2026_acoes.jsonl")
+        );
+    }
+
+    #[test]
+    fn marcador_vazio_nunca_casa_sem_panic() {
+        let mut s = MarkerScanner::new("");
+        assert_eq!(s.push(b"qualquer coisa"), None);
     }
 
     #[test]
