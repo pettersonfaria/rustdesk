@@ -7338,6 +7338,7 @@ dependencies = [
  "system_shutdown",
  "tao",
  "tauri-winrt-notification",
+ "tempfile",
  "terminfo",
  "termios 0.3.3",
  "tiny-skia",

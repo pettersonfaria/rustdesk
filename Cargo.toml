@@ -227,6 +227,7 @@ os-version = "0.2"
 [dev-dependencies]
 hound = "3.5"
 docopt = "1.1"
+tempfile = "3"
 
 [package.metadata.bundle]
 name = "RustDesk"
